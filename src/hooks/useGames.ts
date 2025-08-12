@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import type { GameQuery } from "../App";
 import { type FetchResponse } from "../services/api-client";
 import type { Platform } from "./usePlatforms";
 import APIClient from "../services/api-client";
 
-const apiClient = new APIClient<Game>("/games");
-
+// Consider moving this to a separate types file
 export interface Game {
   id: number;
   name: string;
@@ -14,19 +13,26 @@ export interface Game {
   metacritic: number;
 }
 
+const apiClient = new APIClient<Game>("/games");
+
 const useGames = (gameQuery: GameQuery) =>
-  useQuery<FetchResponse<Game>, Error>({
+  useInfiniteQuery<FetchResponse<Game>, Error>({
     queryKey: ["games", gameQuery],
-    queryFn: () =>
+    queryFn: ({ pageParam }) =>
       apiClient.getAll({
         params: {
           genres: gameQuery.genre?.id,
           parent_platforms: gameQuery.platform?.id,
           ordering: gameQuery.sortOrder,
           search: gameQuery.searchText,
+          page: pageParam ?? 1,
         },
       }),
+    initialPageParam: 1,
     staleTime: 10 * 1000,
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.next ? allPages.length + 1 : undefined,
+    enabled: !!gameQuery,
   });
 
 export default useGames;
