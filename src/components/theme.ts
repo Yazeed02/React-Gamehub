@@ -2,6 +2,7 @@ import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
+  useSystemColorMode: false,
 };
 
 const theme = extendTheme({
@@ -19,6 +20,22 @@ const theme = extendTheme({
       800: "#121212",
       900: "#0d0d0d",
     },
+    // custom light mode colors
+    lightGray: {
+      50: "#ffffff",
+      100: "#f7f7f7",
+      200: "#e2e2e2",
+      300: "#cfcfcf",
+    },
+  },
+  styles: {
+    global: (props: any) => ({
+      body: {
+        bg: props.colorMode === "light" ? "lightGray.50" : "gray.900",
+        color: props.colorMode === "light" ? "gray.800" : "gray.50",
+      },
+    }),
   },
 });
+
 export default theme;
