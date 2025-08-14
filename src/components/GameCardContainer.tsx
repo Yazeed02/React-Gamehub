@@ -3,13 +3,16 @@ import type { ReactNode } from "react";
 
 
 interface Props {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 
 const GameCardContainer = ({ children }: Props) => {
   return (
-    <Box borderRadius={10} overflow={'hidden'}>
+    <Box borderRadius={10} overflow={'hidden'} _hover={{
+      transform: 'scale(1.03)',
+      transition: 'transform 0.15s ease-in-out',
+    }}>
       {children}
     </Box>
   )
